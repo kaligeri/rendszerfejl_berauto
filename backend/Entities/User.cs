@@ -5,6 +5,13 @@ using System.Security.Cryptography;
 
 namespace BerAuto.Backend.Entities;
 
+public enum Role
+{
+    User,
+    Agent,
+    Admin
+}
+
 public class User
 {
     public Guid Id { get; set; } = Guid.NewGuid();
