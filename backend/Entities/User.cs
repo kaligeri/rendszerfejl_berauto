@@ -1,9 +1,15 @@
-using backend.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Security.Cryptography;
 
 namespace BerAuto.Backend.Entities;
+
+public enum Role
+{
+    User,
+    Agent,
+    Admin
+}
 
 public class User
 {
