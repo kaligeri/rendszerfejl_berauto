@@ -27,13 +27,13 @@ public class Car
     public bool _ac { get; set; }
 
     public int _doors { get; set; }
-    public int _passangerCapacity { get; set; }
+    public int _passengerCapacity { get; set; }
 
     public int _ownWeight { get; set; }
 
     public int _trunkCapacity { get; set; }
 
-    public int _mileage { get; set; } 
+    public int _kilometer { get; set; } 
     
     public decimal _dailyRate { get; set; }
     
