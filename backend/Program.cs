@@ -19,8 +19,6 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-var = 10;
-
 app.MapGet("/weatherforecast", () =>
 {
     var forecast =  Enumerable.Range(1, 5).Select(index =>
@@ -43,3 +41,8 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 }
 
 // test test test 
+// teeeeeeeeeeeeeeeestttttttttt
+// testing again
+// zalan test
+// test push
+// test zalan again
