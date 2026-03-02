@@ -1,0 +1,14 @@
+C:\Users\bozsi\source\repos\Berauto\Berauto\bin\Debug\net9.0\Berauto.exe
+C:\Users\bozsi\source\repos\Berauto\Berauto\bin\Debug\net9.0\Berauto.deps.json
+C:\Users\bozsi\source\repos\Berauto\Berauto\bin\Debug\net9.0\Berauto.runtimeconfig.json
+C:\Users\bozsi\source\repos\Berauto\Berauto\bin\Debug\net9.0\Berauto.dll
+C:\Users\bozsi\source\repos\Berauto\Berauto\bin\Debug\net9.0\Berauto.pdb
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\Berauto.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\Berauto.AssemblyInfoInputs.cache
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\Berauto.AssemblyInfo.cs
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\Berauto.csproj.CoreCompileInputs.cache
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\Berauto.dll
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\refint\Berauto.dll
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\Berauto.pdb
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\Berauto.genruntimeconfig.cache
+C:\Users\bozsi\source\repos\Berauto\Berauto\obj\Debug\net9.0\ref\Berauto.dll
