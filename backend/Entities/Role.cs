@@ -1,9 +1,7 @@
-namespace backend.Entities
-{
+namespace BerAuto.Backend.Entities;
     public enum Role
     {
         User,
         Agent,
         Admin
     }
-}
