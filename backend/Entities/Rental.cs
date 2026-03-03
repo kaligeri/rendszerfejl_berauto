@@ -5,7 +5,7 @@ namespace BerAuto.Backend.Entities;
 public class Rental
 {
     public int Id { get; set; }
-    public int? UserId { get; set; }
+    public Guid? UserId { get; set; }
     public User? User { get; set; }
 
     public string? GuestName { get; set; }
@@ -22,7 +22,7 @@ public class Rental
     public DateTime EndDate { get; set; }
 
     [Required]
-    public string Status { get; set; } = "Pending";
+    public RentalStatus Status { get; set; } = RentalStatus.Pending;
 
     public DateTime? ActualReturnDate { get; set; }
     
