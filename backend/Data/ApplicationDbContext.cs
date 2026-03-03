@@ -1,8 +1,9 @@
 ﻿using BerAuto.Backend.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Data
 {
-    /*
+    
     public class ApplicationDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
@@ -13,7 +14,8 @@ namespace backend.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
         }
     }
-    */
+    
 }
