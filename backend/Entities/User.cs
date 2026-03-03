@@ -1,7 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Security.Cryptography;
-
 namespace BerAuto.Backend.Entities;
 
 public class User
@@ -26,19 +23,4 @@ public class User
     public Role Role { get; set; }
 
     public List<Rental> Rentals { get; set; } = new();
-
-    public static string HashPassword(string password)
-    {
-        using (SHA256 sha256 = SHA256.Create())
-        {
-            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(bytes);
-        }
-    }
-
-    public bool VerifyPassword(string password)
-    {
-        return PasswordHash == HashPassword(password);
-    }
-
 }
