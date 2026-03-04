@@ -1,0 +1,127 @@
+:root {
+  --primary-black: #1a1a1a;
+  --accent-blue: #0984e3;
+  --text-gray: #636e72;
+  --bg-light: #f9f9f9;
+}
+
+.cars-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 20px;
+}
+
+.car-card {
+  flex: 0 1 320px;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.car-card {
+  width: 320px;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  border: 1px solid #f0f0f0;
+  font-family: "Inter", sans-serif;
+  margin-inline: 20px;
+}
+
+.car-card:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Image Section */
+.car-image {
+  position: relative;
+  height: 200px;
+}
+
+.car-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-black);
+}
+
+/* Content Section */
+.car-content {
+  padding: 20px;
+}
+
+.car-title {
+  margin: 0 0 15px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary-black);
+}
+
+.car-specs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.spec-item {
+  font-size: 13px;
+  color: var(--text-gray);
+  background: var(--bg-light);
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.car-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.amount {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary-black);
+}
+
+.unit {
+  font-size: 12px;
+  color: var(--text-gray);
+}
+
+.rent-btn {
+  background: var(--primary-black);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.rent-btn:hover {
+  background: #333;
+}

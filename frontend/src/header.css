@@ -1,0 +1,50 @@
+.navbar-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: auto;
+  background-color: white;
+  padding: 8px 12px;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f0f0f0;
+  margin: 20px;
+}
+
+.brand {
+  font-family: serif;
+  font-weight: 900;
+  font-size: 35px;
+  padding-left: 15px;
+  margin-right: 30px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-item {
+  border: none;
+  background: none;
+  padding: 10px 22px;
+  cursor: pointer;
+  border-radius: 25px;
+  font-family: sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.nav-item.active {
+  background-color: #000;
+  color: #fff;
+}
+
+.nav-item:hover {
+  background-color: #929292;
+}
+
+.nav-item.active:hover {
+  background-color: #333;
+}
