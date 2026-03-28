@@ -4,40 +4,26 @@ namespace BerAuto.Backend.Entities;
 
 public class Car
 {
-    public int _id { get; set; }
-    
+    public int Id { get; set; }
+
     [Required]
-    public string _brand { get; set; } = string.Empty;
-    
+    public string Brand { get; set; } = string.Empty; // Pl: "BMW 320d"
+
     [Required]
-    public string _licensePlate { get; set; } = string.Empty;
+    public string LicensePlate { get; set; } = string.Empty;
 
-    public string _engine { get; set; }
+    public string? FuelType { get; set; } // Benzin, Dízel, Elektromos
+    public string? Transmission { get; set; } // Manuális, Automata
 
-    public string _fuelType { get; set; }
+    public int PassengerCapacity { get; set; }
 
-    public int _performance { get; set; } //HP
+    [Required]
+    public decimal DailyRate { get; set; }
 
-    public int _torque { get; set; } //Nm
+    public bool IsAvailable { get; set; } = true;
 
-    public double _fuelConsumption { get; set; } // l/100km
+    // Itt a kért kép elérhetõsége
+    public string? ImageUrl { get; set; }
 
-    public string _transmission { get; set; } // The car is: manual/ electric - 5 speed, 4 speed etc 
-
-    public bool _ac { get; set; }
-
-    public int _doors { get; set; }
-    public int _passengerCapacity { get; set; }
-
-    public int _ownWeight { get; set; }
-
-    public int _trunkCapacity { get; set; }
-
-    public int _kilometer { get; set; } 
-    
-    public decimal _dailyRate { get; set; }
-    
-    public bool _isAvailable { get; set; } 
-
-    public string? _technicalNotes { get; set; } 
+    public string? Description { get; set; }
 }

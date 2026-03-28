@@ -21,7 +21,7 @@ namespace backend.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Car>()
-                .HasKey(c => c._id);
+                .HasKey(c => c.Id);
 
             // User - Rental kapcsolat (Egy felhasználónak sok bérlése lehet)
             modelBuilder.Entity<Rental>()
@@ -49,7 +49,7 @@ namespace backend.Data
                 .HasConversion<string>();
 
             // Pénzügyi mezők pontossága
-            modelBuilder.Entity<Car>().Property(c => c._dailyRate).HasPrecision(18, 2);
+            modelBuilder.Entity<Car>().Property(c => c.DailyRate).HasPrecision(18, 2);
             modelBuilder.Entity<Rental>().Property(r => r.TotalCost).HasPrecision(18, 2);
             modelBuilder.Entity<Invoice>().Property(i => i.TotalAmount).HasPrecision(18, 2);
         }

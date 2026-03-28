@@ -1,41 +1,56 @@
 using backend.Data;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+// --- 1. CORS POLICY ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
-        policy => policy.WithOrigins("http://localhost:5173")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
 });
 
-builder.Services.AddOpenApi();
+// --- 2. ADATBÁZIS ÉS SZERVIZEK ---
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<ICarService, CarService>();
+// Ide jöhetnek a jövõbeli szervizek (RentalService, UserService, stb.)
+
+// --- 3. ALAP API FUNKCIÓK ---
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// --- 4. SWAGGER ---
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "BerAuto API", Version = "v1" });
+});
 
 var app = builder.Build();
 
-
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-}
-
+// --- 5. MIDDLEWARE SORREND (FONTOS!) ---
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "BerAuto API v1");
+    });
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowReactApp");
+app.UseAuthorization();
 
-app.MapGet("/", () => "BerAuto API fut!");
+app.MapControllers();
 
 app.Run();
