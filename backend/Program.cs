@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// --- 1. CORS POLICY ---
+// CORS POLICY
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
@@ -18,18 +18,18 @@ builder.Services.AddCors(options =>
         });
 });
 
-// --- 2. ADATBÁZIS ÉS SZERVIZEK ---
+//ADATBÁZIS ÉS SZERVIZEK
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<ICarService, CarService>();
-// Ide jöhetnek a jövõbeli szervizek (RentalService, UserService, stb.)
+// Ide jöhetnek a jövõbeli szervizek
 
-// --- 3. ALAP API FUNKCIÓK ---
+//ALAP API FUNKCIÓK
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// --- 4. SWAGGER ---
+//SWAGGER
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "BerAuto API", Version = "v1" });
@@ -37,7 +37,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// --- 5. MIDDLEWARE SORREND (FONTOS!) ---
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
