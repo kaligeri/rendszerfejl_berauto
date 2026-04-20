@@ -1,5 +1,6 @@
 ﻿using backend.Services;
 using BerAuto.Backend.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -15,6 +16,7 @@ namespace backend.Controllers
             _carService = carService;
         }
 
+        [Authorize]
         //Összes autó lekérése (GET: api/cars)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Car>>> GetAll()

@@ -1,12 +1,16 @@
 using backend.Data;
 using backend.Services;
+using backend.Services.Auth;
+using BerAuto.Backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// CORS POLICY
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
@@ -18,21 +22,50 @@ builder.Services.AddCors(options =>
         });
 });
 
-//ADATBÁZIS ÉS SZERVIZEK
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<ICarService, CarService>();
-// Ide jöhetnek a jövõbeli szervizek
 
-//ALAP API FUNKCIÓK
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>(); 
+builder.Services.AddScoped<IAuthService, AuthService>();      
+
+
+var jwtSettings = builder.Configuration.GetSection("AppSettings:Token").Value;
+if (string.IsNullOrEmpty(jwtSettings))
+{
+
+    jwtSettings = "alapertelmezett-szuper-titkos-kulcs-1234567890";
+}
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-//SWAGGER
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "BerAuto API", Version = "v1" });
+
+
+    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Másold be a tokent így: 'bearer {token}'",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
 });
 
 var app = builder.Build();
@@ -47,7 +80,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseCors("AllowReactApp");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -1,5 +1,6 @@
 ﻿using backend.Data;
 using BerAuto.Backend.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -14,6 +15,7 @@ namespace backend.Services
             _context = context;
         }
 
+        
         public async Task<IEnumerable<Car>> GetAllAsync() => await _context.Cars.ToListAsync();
 
         public async Task<Car?> GetByIdAsync(int id) => await _context.Cars.FindAsync(id);
@@ -30,7 +32,6 @@ namespace backend.Services
             var existingCar = await _context.Cars.FindAsync(id);
             if (existingCar == null) return false;
 
-            // Csak azokat a mezőket frissítjük, amik maradtak
             existingCar.Brand = car.Brand;
             existingCar.LicensePlate = car.LicensePlate;
             existingCar.FuelType = car.FuelType;
