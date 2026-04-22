@@ -61,7 +61,7 @@ function Headernav({ token, username, isAdmin, handleLogout }) {
                             className="nav-item logout-btn"
                             onClick={() => {
                                 handleLogout();
-                                navigate("/login"); // Send them to login page after logging out
+                                navigate("/login");
                             }}
                         >
                             Logout

@@ -13,6 +13,7 @@ function AppContent() {
     const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [username, setUsername] = useState(localStorage.getItem("username") || "");
     const [isAdmin, setIsAdmin] = useState(false);
+    const [userId, setUserId] = useState(null)
 
     const handleLogout = () => {
         setToken(null);
@@ -34,6 +35,8 @@ function AppContent() {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
+                const id = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || decodedToken.nameid || decodedToken.sub;
+                setUserId(id);
                 const roleClaim =
                     decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ||
                     decodedToken.role ||
@@ -46,6 +49,7 @@ function AppContent() {
             }
         } else {
             setIsAdmin(false);
+            setUserId(null);
         }
     }, [token]);
 
@@ -62,7 +66,7 @@ function AppContent() {
                 <Routes>
                     <Route path="/" element={<Navigate to="/autos" />} />
 
-                    <Route path="/autos" element={<Carspage token={token} isAdmin={isAdmin} />} />
+                    <Route path="/autos" element={<Carspage token={token} isAdmin={isAdmin} userId={userId} />} />
 
                     <Route path="/gyik" element={<div>Ide jön a GYIK oldal...</div>} />
 
@@ -80,7 +84,6 @@ function AppContent() {
     );
 }
 
-// The main App wrapper that provides the Router context
 function App() {
     return (
         <BrowserRouter>

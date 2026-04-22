@@ -57,9 +57,9 @@ export default function LoginPage({ onLogin }) {
                   <input
                                       id="username"
                     className="lp-input"
-                                      type="string"
-                    placeholder="you@example.com"
-                    value={form.email}
+                                      type="text"
+                    placeholder="username"
+                    value={form.username}
                     onChange={set("username")}
                     autoComplete="username"
                     required
@@ -111,9 +111,6 @@ export default function LoginPage({ onLogin }) {
 
               {error && (
                 <div className="lp-error" role="alert">
-                  <svg viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3.5a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4.5zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-                  </svg>
                   {error}
                 </div>
               )}
