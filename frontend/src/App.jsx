@@ -1,19 +1,92 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Headernav from "./header";
-import Homepage from "./home";
-import Carspage from "./cars";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
+import Headernav from "./header";
+import LoginPage from "./LoginPage";
+import RegisterPage from "./RegisterPage";
+import Carspage from "./Cars";
+
+function AppContent() {
+    const navigate = useNavigate();
+
+    const [token, setToken] = useState(localStorage.getItem("token") || null);
+    const [username, setUsername] = useState(localStorage.getItem("username") || "");
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const handleLogout = () => {
+        setToken(null);
+        setUsername("");
+        setIsAdmin(false);
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+    };
+
+    const handleLogin = (newToken, loggedInUser) => {
+        setToken(newToken);
+        setUsername(loggedInUser);
+        localStorage.setItem("token", newToken);
+        localStorage.setItem("username", loggedInUser);
+        navigate("/autos");
+    };
+
+    useEffect(() => {
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                const roleClaim =
+                    decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ||
+                    decodedToken.role ||
+                    decodedToken.Role;
+
+                setIsAdmin(roleClaim === "Admin" || roleClaim === 2 || roleClaim === "2");
+            } catch (err) {
+                console.error("Hiba a token dekódolásakor:", err);
+                handleLogout();
+            }
+        } else {
+            setIsAdmin(false);
+        }
+    }, [token]);
+
+    return (
+        <div className="app-layout">
+            <Headernav
+                token={token}
+                username={username}
+                isAdmin={isAdmin}
+                handleLogout={handleLogout}
+            />
+
+            <main style={{ padding: "30px" }}>
+                <Routes>
+                    <Route path="/" element={<Navigate to="/autos" />} />
+
+                    <Route path="/autos" element={<Carspage token={token} isAdmin={isAdmin} />} />
+
+                    <Route path="/gyik" element={<div>Ide jön a GYIK oldal...</div>} />
+
+                    <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+
+                    <Route path="/register" element={
+                        <RegisterPage
+                            onSuccess={() => navigate("/login")}
+                            onLoginClick={() => navigate("/login")}
+                        />
+                    } />
+                </Routes>
+            </main>
+        </div>
+    );
+}
+
+// The main App wrapper that provides the Router context
 function App() {
-  return (
-    <BrowserRouter>
-      <Headernav />
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/autos" element={<Carspage />} />
-        <Route path="/gyik" element={<h1>GYIK</h1>} />
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <AppContent />
+        </BrowserRouter>
+    );
 }
 
 export default App;

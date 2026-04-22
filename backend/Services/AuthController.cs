@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using BerAuto.Backend.Entities;
 using BerAuto.Backend.Services;
 using backend.Services.Auth;
-
+using backend.Data;
 
 namespace BerAuto.Backend.Controllers;
 
@@ -10,25 +11,30 @@ namespace BerAuto.Backend.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private static List<User> Users = new();
     private readonly IAuthService _authService;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly ApplicationDbContext _context;
 
-    public AuthController(IAuthService authService, IPasswordHasher passwordHasher)
+    public AuthController(IAuthService authService, IPasswordHasher passwordHasher, ApplicationDbContext context)
     {
         _authService = authService;
         _passwordHasher = passwordHasher;
+        _context = context;
     }
 
     [HttpPost("register")]
-    public ActionResult<User> Register(RegisterDto request)
+    public async Task<ActionResult<User>> Register(RegisterDto request)
     {
+        if (await _context.Users.AnyAsync(u => u.Username == request.Username))
+        {
+            return BadRequest("Ez a felhasználónév már foglalt.");
+        }
 
         string passwordHash = _passwordHasher.HashPassword(request.Password);
 
         var newUser = new User
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid(), 
             Username = request.Username,
             Email = request.Email,
             PasswordHash = passwordHash,
@@ -37,14 +43,16 @@ public class AuthController : ControllerBase
             PhoneNumber = request.PhoneNumber
         };
 
-        Users.Add(newUser);
+        _context.Users.Add(newUser);
+        await _context.SaveChangesAsync();
+
         return Ok(new { message = "Sikeres regisztráció!", user = newUser.Username });
     }
 
     [HttpPost("login")]
-    public ActionResult<string> Login(LoginDto request)
+    public async Task<ActionResult<string>> Login(LoginDto request)
     {
-        var user = Users.FirstOrDefault(u => u.Username == request.Username);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
 
         if (user == null) return BadRequest("Felhasználó nem található.");
 
