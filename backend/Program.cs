@@ -30,7 +30,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>(); 
-builder.Services.AddScoped<IAuthService, AuthService>();      
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IRentalService, RentalService>();
 
 
 var jwtSettings = builder.Configuration.GetSection("AppSettings:Token").Value;
