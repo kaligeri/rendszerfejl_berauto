@@ -19,6 +19,7 @@ namespace backend.Controllers
         [Authorize]
         //Összes autó lekérése (GET: api/cars)
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Car>>> GetAll()
         {
             return Ok(await _carService.GetAllAsync());
