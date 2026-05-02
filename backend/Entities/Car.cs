@@ -17,6 +17,8 @@ public class Car
 
     public int PassengerCapacity { get; set; }
 
+    public int Mileage { get; set; }
+
     [Required]
     public decimal DailyRate { get; set; }
 

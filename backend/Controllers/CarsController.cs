@@ -34,6 +34,7 @@ namespace backend.Controllers
         }
 
         //Új autó hozzáadása (POST: api/cars)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Car>> Create(Car car)
         {
@@ -43,6 +44,7 @@ namespace backend.Controllers
         }
 
         //Autó adatainak frissítése (PUT: api/cars/5)
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Car car)
         {
@@ -52,6 +54,7 @@ namespace backend.Controllers
         }
 
         //Autó törlése (DELETE: api/cars/5)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
