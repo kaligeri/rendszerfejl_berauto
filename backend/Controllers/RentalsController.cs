@@ -4,7 +4,7 @@ using BerAuto.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-namespace BerAuto.Backend.Controllers;
+namespace backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -72,7 +72,62 @@ public class RentalsController : ControllerBase
         var rentals = await _rentalService.GetUserRentalsAsync(userId);
         return Ok(rentals);
     }
+
+    // 1. Ügyintéző listázza a bérléseket (pl. állapot szerinti szűréssel)
+    [Authorize(Roles = "Agent, Admin")]
+    [HttpGet("manage")]
+    public async Task<ActionResult<IEnumerable<Rental>>> GetAllRentalsForManagement([FromQuery] RentalStatus? status = null)
+    {
+        var rentals = await _rentalService.GetAllRentalsAsync();
+
+        // Ha a frontend kér egy adott státuszt (pl. csak a Pendingeket), akkor leszűrjük
+        if (status.HasValue)
+        {
+            rentals = rentals.Where(r => r.Status == status.Value);
+        }
+
+        return Ok(rentals);
+    }
+
+    // 2. Igény jóváhagyása vagy elutasítása
+    [Authorize(Roles = "Agent, Admin")]
+    [HttpPut("manage/{id}/decide")]
+    public async Task<IActionResult> DecideRental(int id, [FromQuery] bool approve)
+    {
+        // Ha approve == true, akkor Approved, különben Rejected
+        RentalStatus newStatus = approve ? RentalStatus.Approved : RentalStatus.Rejected;
+
+        var success = await _rentalService.UpdateStatusAsync(id, newStatus);
+
+        if (!success) return NotFound("A bérlés nem található.");
+        return Ok(new { message = $"A bérlés állapota módosítva: {newStatus}" });
+    }
+
+    // 3. Autó átadása (Kölcsönzés elindítása)
+    [Authorize(Roles = "Agent, Admin")]
+    [HttpPut("manage/{id}/handover")]
+    public async Task<IActionResult> HandoverCar(int id)
+    {
+        // Ideálisan itt ellenőrizni kéne, hogy "Approved" állapotban van-e a bérlés
+        var success = await _rentalService.UpdateStatusAsync(id, RentalStatus.Active);
+
+        if (!success) return NotFound("A bérlés nem található.");
+        return Ok(new { message = "Az autó átadása sikeresen rögzítve. A bérlés mostantól aktív!" });
+    }
+
+    // 4. Autó visszavétele (Kölcsönzés lezárása)
+    [Authorize(Roles = "Agent, Admin")]
+    [HttpPut("manage/{id}/return")]
+    public async Task<IActionResult> ReturnCar(int id)
+    {
+        // Ez fogja beállítani a Completed státuszt és a visszavétel dátumát (ActualReturnDate)
+        var success = await _rentalService.UpdateStatusAsync(id, RentalStatus.Completed);
+
+        if (!success) return NotFound("A bérlés nem található.");
+        return Ok(new { message = "Az autó visszavétele sikeresen rögzítve. A bérlés lezárult." });
+    }
 }
+
 
 public record RentalDto(
     int CarId,

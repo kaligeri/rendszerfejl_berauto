@@ -66,8 +66,11 @@ public class RentalService : IRentalService
     {
         var rental = await _context.Rentals.FindAsync(rentalId);
         if (rental == null) return false;
-
         rental.Status = newStatus;
+        if (newStatus == RentalStatus.Completed && rental.ActualReturnDate == null)
+        {
+            rental.ActualReturnDate = DateTime.Now;
+        }
 
         await _context.SaveChangesAsync();
         return true;

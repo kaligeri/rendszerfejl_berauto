@@ -58,9 +58,17 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _carService.DeleteAsync(id);
-            if (!success) return NotFound();
-            return NoContent();
+            try
+            {
+                var success = await _carService.DeleteAsync(id);
+                if (!success) return NotFound();
+                return NoContent(); // Ez a 204-es sikeres válasz
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Ha a szerviz hibát dob (mert van bérlése az autónak), itt elkapjuk!
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
     }

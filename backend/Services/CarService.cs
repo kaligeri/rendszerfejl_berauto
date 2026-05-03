@@ -50,6 +50,12 @@ namespace backend.Services
         {
             var car = await _context.Cars.FindAsync(id);
             if (car == null) return false;
+            bool hasRentals = await _context.Rentals.AnyAsync(r => r.CarId == id);
+            if (hasRentals)
+            {
+                // Ha van bérlése, egy egyedi kivételt dobunk, amit a Controller elkap
+                throw new InvalidOperationException("Ezt az autót nem lehet törölni, mert már szerepel egy vagy több bérlésben!");
+            }
 
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();

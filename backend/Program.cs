@@ -8,8 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddCors(options =>
