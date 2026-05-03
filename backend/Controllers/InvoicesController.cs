@@ -77,7 +77,7 @@ namespace backend.Controllers
             return Ok(invoices);
         }
 
-        // 3. Számla kifizetése (pl. a fizetési kapu után hívja meg a frontend)
+        //Számla kifizetése
         [HttpPut("{id}/pay")]
         public async Task<IActionResult> PayInvoice(int id)
         {
@@ -93,10 +93,10 @@ namespace backend.Controllers
         }
         // GET: api/Invoices/{id}/download
         [HttpGet("{id}/download")]
-        [AllowAnonymous] // Most ideiglenesen levesszük a lakatot, hogy a böngészőből könnyen letölthető legyen
+        [AllowAnonymous]
         public async Task<IActionResult> DownloadInvoicePdf(int id)
         {
-            // Lekérjük a számlát minden kapcsolódó adattal (Bérlés, Autó, User)
+
             var invoice = await _context.Invoices
                 .Include(i => i.Rental)
                     .ThenInclude(r => r.Car)
@@ -105,83 +105,121 @@ namespace backend.Controllers
 
             if (invoice == null) return NotFound("Számla nem található.");
 
-            // Megnézzük, hogy regisztrált user vagy vendég bérelte-e
-            string customerName = invoice.Rental!.UserId != null
-                ? invoice.Rental.User!.Username
-                : invoice.Rental.GuestName ?? "Ismeretlen ügyfél";
+            // Ügyfél adatainak meghatározása
+            string customerName = invoice.Rental!.UserId != null ? invoice.Rental.User!.Username : invoice.Rental.GuestName ?? "Ismeretlen ügyfél";
+            string customerAddress = invoice.Rental.User?.Address ?? "Nincs megadva";
 
-            // --- PDF DOKUMENTUM FELÉPÍTÉSE ---
+            // Időtartam számítása
+            int rentedDays = (invoice.Rental.EndDate.Date - invoice.Rental.StartDate.Date).Days;
+            if (rentedDays <= 0) rentedDays = 1; // Minimum 1 napot számlázunk
+
             var document = Document.Create(container =>
             {
                 container.Page(page =>
                 {
                     page.Size(PageSizes.A4);
-                    page.Margin(2, Unit.Centimetre);
+                    page.Margin(1, Unit.Centimetre);
                     page.PageColor(Colors.White);
-                    page.DefaultTextStyle(x => x.FontSize(12));
+                    page.DefaultTextStyle(x => x.FontSize(10).FontFamily(Fonts.Verdana));
 
-                    // Fejléc
-                    page.Header().Row(row =>
+                    //FEJLÉC
+                    page.Header().Column(col =>
                     {
-                        row.RelativeItem().Column(col =>
+                        col.Item().Row(row =>
                         {
-                            col.Item().Text("SZÁMLA").SemiBold().FontSize(36).FontColor(Colors.Blue.Darken2);
-                            col.Item().Text($"Számlaszám: #INV-{invoice.Id:0000}").FontSize(14);
-                            col.Item().Text($"Kiállítva: {invoice.IssuedAt:yyyy.MM.dd}").FontSize(14);
-                        });
-                    });
+                            row.ConstantItem(60).Height(60).Background(Colors.Blue.Medium).AlignCenter().AlignMiddle()
+                                .Text("B").FontSize(30).FontColor(Colors.White).SemiBold();
 
-                    // Tartalom
-                    page.Content().PaddingVertical(1, Unit.Centimetre).Column(column =>
-                    {
-                        // Ügyfél adatok
-                        column.Item().Text("Vevő adatai:").SemiBold().FontSize(16);
-                        column.Item().Text(customerName);
-                        column.Item().PaddingBottom(1, Unit.Centimetre);
-
-                        // Tételes lista (Táblázat)
-                        column.Item().Table(table =>
-                        {
-                            table.ColumnsDefinition(columns =>
+                            row.RelativeItem().PaddingLeft(10).Column(c =>
                             {
-                                columns.RelativeColumn(3); // Megnevezés oszlop
-                                columns.RelativeColumn(1); // Napok száma
-                                columns.RelativeColumn(1); // Ár
+                                c.Item().Text("BerAuto Kft.").SemiBold().FontSize(12);
+                                c.Item().Text("1111 Budapest, Autó út 10.");
+                                c.Item().Text("Adószám: 12345678-1-11");
                             });
 
-                            // Táblázat fejléce
-                            table.Header(header =>
+                            row.RelativeItem().AlignRight().Column(c =>
                             {
-                                header.Cell().BorderBottom(1).Padding(2).Text("Megnevezés").SemiBold();
-                                header.Cell().BorderBottom(1).Padding(2).Text("Időtartam").SemiBold();
-                                header.Cell().BorderBottom(1).Padding(2).Text("Összesen").SemiBold().AlignRight();
+                                c.Item().Text("ELEKTRONIKUS SZÁMLA").FontSize(20).SemiBold();
+                                c.Item().PaddingTop(5).Text($"Sorszám: E-BA-{invoice.IssuedAt.Year}-{invoice.Id:0000}");
                             });
-
-                            // Táblázat sora (A bérlés adatai)
-                            int rentedDays = (invoice.Rental.EndDate - invoice.Rental.StartDate).Days;
-                            if (rentedDays == 0) rentedDays = 1; // Minimum 1 nap
-
-                            table.Cell().Padding(2).Text($"Autóbérlés: {invoice.Rental.Car!.Brand} ({invoice.Rental.Car.LicensePlate})");
-                            table.Cell().Padding(2).Text($"{rentedDays} nap");
-                            table.Cell().Padding(2).Text($"{invoice.TotalAmount} Ft").AlignRight();
                         });
-
-                        // Végösszeg
-                        column.Item().PaddingTop(20).AlignRight().Text($"Fizetendő végösszeg: {invoice.TotalAmount} Ft")
-                            .SemiBold().FontSize(20);
-
-                        // Státusz
-                        string statusText = invoice.IsPaid ? "KIFIZETVE" : "NINCS KIFIZETVE";
-                        string statusColor = invoice.IsPaid ? Colors.Green.Medium : Colors.Red.Medium;
-
-                        column.Item().PaddingTop(10).AlignRight().Text(statusText)
-                            .SemiBold().FontSize(16).FontColor(statusColor);
+                        col.Item().PaddingVertical(5).LineHorizontal(2).LineColor(Colors.Blue.Medium);
                     });
 
-                    // Lábjegyzet
+                    page.Content().Column(column =>
+                    {
+                        column.Item().Row(row =>
+                        {
+                            row.RelativeItem().Column(c =>
+                            {
+                                c.Item().Text("VEVŐ:").SemiBold();
+                                c.Item().Text(customerName).FontSize(12).SemiBold();
+                                c.Item().Text(customerAddress);
+                                c.Item().Text(invoice.Rental.User?.PhoneNumber ?? "");
+                            });
+
+                            row.RelativeItem().Table(table =>
+                            {
+                                table.ColumnsDefinition(c => { c.RelativeColumn(); c.RelativeColumn(); });
+                                table.Cell().Text("Fizetési mód:");
+                                table.Cell().AlignRight().Text("Átutalás");
+                                table.Cell().Text("Kiállítás dátuma:");
+                                table.Cell().AlignRight().Text($"{invoice.IssuedAt:yyyy.MM.dd}.");
+                                table.Cell().Background(Colors.Blue.Medium).Padding(2).Text("Fizetési határidő:").FontColor(Colors.White).SemiBold();
+                                table.Cell().Background(Colors.Blue.Medium).Padding(2).AlignRight().Text($"{invoice.IssuedAt.AddDays(8):yyyy.MM.dd}.").FontColor(Colors.White).SemiBold();
+                            });
+                        });
+
+                        column.Item().PaddingTop(20).Table(table =>
+                        {
+                            table.ColumnsDefinition(c =>
+                            {
+                                c.RelativeColumn(4); // Szolgáltatás megnevezése
+                                c.RelativeColumn(2); // Időszak (Mettől-meddig)
+                                c.RelativeColumn(1); // Napok
+                                c.RelativeColumn(1.5f); // Napi díj
+                                c.RelativeColumn(1.5f); // Bruttó érték
+                            });
+
+                            table.Header(h =>
+                            {
+                                h.Cell().Text("Szolgáltatás megnevezése").SemiBold();
+                                h.Cell().AlignCenter().Text("Bérleti időszak").SemiBold();
+                                h.Cell().AlignCenter().Text("Napok").SemiBold();
+                                h.Cell().AlignRight().Text("Egységár (nap)").SemiBold();
+                                h.Cell().AlignRight().Text("Bruttó ár").SemiBold();
+                                h.Cell().Element(x => x.PaddingVertical(5).BorderBottom(1));
+                            });
+
+                            // Tétel sor kitöltése az adatbázisból
+                            var car = invoice.Rental.Car!;
+                            table.Cell().PaddingVertical(5).Column(c => {
+                                c.Item().Text($"Gépjármű bérlés: {car.Brand}").SemiBold();
+                                c.Item().Text($"Rendszám: {car.LicensePlate}").FontSize(9).Italic();
+                            });
+
+                            table.Cell().AlignCenter().PaddingVertical(5).Text($"{invoice.Rental.StartDate:yyyy.MM.dd} - {invoice.Rental.EndDate:yyyy.MM.dd}");
+                            table.Cell().AlignCenter().PaddingVertical(5).Text($"{rentedDays} nap");
+                            table.Cell().AlignRight().PaddingVertical(5).Text($"{car.DailyRate:N0} Ft");
+                            table.Cell().AlignRight().PaddingVertical(5).Text($"{invoice.TotalAmount:N0} Ft");
+                        });
+
+                        // --- ÖSSZESÍTÉS ---
+                        column.Item().PaddingTop(30).AlignRight().Column(c =>
+                        {
+                            c.Item().Text($"Fizetendő összesen: {invoice.TotalAmount:N0} Ft").FontSize(18).SemiBold().FontColor(Colors.Blue.Medium);
+                            c.Item().PaddingTop(5).Text(invoice.IsPaid ? "KIFIZETVE" : "ÁTUTALÁSRA VÁR").FontColor(invoice.IsPaid ? Colors.Green.Medium : Colors.Red.Medium).SemiBold();
+                        });
+
+                        if (!invoice.IsPaid)
+                        {
+                            column.Item().PaddingTop(10).Text("Kérjük, az utalás közlemény rovatában tüntesse fel a számla sorszámát!").FontSize(8).Italic();
+                        }
+                    });
+
                     page.Footer().AlignCenter().Text(x =>
                     {
-                        x.Span("Oldalszám: ");
+                        x.Span("Oldal: ");
                         x.CurrentPageNumber();
                         x.Span(" / ");
                         x.TotalPages();
@@ -189,11 +227,8 @@ namespace backend.Controllers
                 });
             });
 
-            // PDF generálása memóriába
             byte[] pdfBytes = document.GeneratePdf();
-
-            // Fájl visszaküldése letöltésre
-            return File(pdfBytes, "application/pdf", $"Szamla_{invoice.Id}.pdf");
+            return File(pdfBytes, "application/pdf", $"BA_Szamla_{invoice.Id}.pdf");
         }
     }
 }
