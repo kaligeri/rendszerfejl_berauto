@@ -40,7 +40,7 @@ export default function RegisterPage({ onSuccess, onLoginClick }) {
               username: form.username,
               email: form.email,
               password: form.password,
-              role: form.role === "Admin" ? 2 : 0,
+              role: form.role === "Admin" ? 2 : (form.role === "Agent" ? 1 : 0),
               address: form.address || null,
               phoneNumber: form.phoneNumber || null,
           }),
@@ -138,6 +138,7 @@ export default function RegisterPage({ onSuccess, onLoginClick }) {
                     <select id="rp-role" className="rp-input rp-select"
                       value={form.role} onChange={set("role")}>
                       <option value="User">User</option>
+                      <option value="Agent">Agent</option>
                       <option value="Admin">Admin</option>
                     </select>
                     <span className="rp-select-arrow"><ChevronIcon /></span>

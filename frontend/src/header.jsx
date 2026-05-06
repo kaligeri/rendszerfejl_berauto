@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./header.css";
 
-function Headernav({ token, username, isAdmin, handleLogout }) {
+function Headernav({ token, username, isAdmin, userRole, handleLogout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -53,10 +53,40 @@ function Headernav({ token, username, isAdmin, handleLogout }) {
                         </button>
                     </>
                 ) : (
-                    <>
-                        <span style={{ color: "#8a8880", margin: "0 10px", alignSelf: "center", fontSize: "14px" }}>
-                            {isAdmin ? "👑 Admin:" : "👤 Felhasználó:"} <strong style={{ color: "black" }}>{username}</strong>
-                        </span>
+                        <>
+                            <button
+                                className={`nav-item ${isActive("/my-rentals") ? "active" : ""}`}
+                                onClick={() => navigate("/my-rentals")}
+                            >
+                                Bérléseim
+                            </button>
+                            {isAdmin && (
+                                <button
+                                    className={`nav-item ${isActive("/manage-rentals") ? "active" : ""}`}
+                                    onClick={() => navigate("/manage-rentals")}
+                                >
+                                    Bérlések Kezelése
+                                </button>
+                            )}
+                            {userRole === "User" && (
+                                <button
+                                    className={`nav-item ${isActive("/my-invoices") ? "active" : ""}`}
+                                    onClick={() => navigate("/my-invoices")}
+                                >
+                                    Számláim
+                                </button>
+                            )}
+                            <span style={{ color: "#8a8880", margin: "0 10px", alignSelf: "center", fontSize: "14px" }}>
+                                {userRole === "Admin" && "👑 Admin: "}
+                                {userRole === "Agent" && "💼 Ügynök: "}
+                                {userRole === "User" && "👤 Felhasználó: "}
+                                <strong style={{ color: "black" }}>{username}</strong>
+                            </span>
+                            <button
+                                className={`nav-item ${isActive("/profile") ? "active" : ""}`}
+                                onClick={() => navigate("/profile")}> Profilom
+                            </button>
+
                         <button
                             className="nav-item logout-btn"
                             onClick={() => {

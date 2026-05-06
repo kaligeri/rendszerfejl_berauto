@@ -1,0 +1,155 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap');
+
+.profile-root {
+    display: flex;
+    justify-content: center;
+    font-family: 'Sora', sans-serif;
+    padding: 40px 20px;
+}
+
+.profile-form-wrap {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.rp-form-header {
+    margin-bottom: 24px;
+}
+
+.rp-title {
+    font-size: 26px;
+    font-weight: 400;
+    color: #141412;
+    margin-bottom: 8px;
+}
+
+.rp-subtitle {
+    font-size: 14px;
+    color: #8a8880;
+    line-height: 1.5;
+    font-weight: 300;
+}
+
+.rp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.rp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.rp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.rp-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b6a67;
+}
+
+.rp-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.rp-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    background: #f9f9f9;
+    border: 1px solid #e2e0d8;
+    border-radius: 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: #141412;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+    .rp-input:focus {
+        border-color: #141412;
+        box-shadow: 0 0 0 3px rgba(20,20,18,0.06);
+        background: #fff;
+    }
+
+.rp-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 14px;
+    background: #fdf0ee;
+    border: 1px solid #f5c6c2;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #c0392b;
+    line-height: 1.4;
+}
+
+.rp-success {
+    background: #e8f5e9;
+    border-color: #c3e6cb;
+    color: #28a745;
+}
+
+.rp-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    width: 100%;
+    background: #141412;
+    color: #f7f6f3;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+    .rp-submit:hover {
+        opacity: 0.88;
+    }
+
+    .rp-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+.rp-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(247,246,243,0.25);
+    border-top-color: #f7f6f3;
+    border-radius: 50%;
+    animation: rp-spin 0.6s linear infinite;
+}
+
+@keyframes rp-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 780px) {
+    .rp-row {
+        grid-template-columns: 1fr;
+    }
+}

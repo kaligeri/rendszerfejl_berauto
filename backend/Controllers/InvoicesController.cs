@@ -163,11 +163,11 @@ namespace backend.Controllers
 
                             table.Cell().Padding(2).Text($"Autóbérlés: {invoice.Rental.Car!.Brand} ({invoice.Rental.Car.LicensePlate})");
                             table.Cell().Padding(2).Text($"{rentedDays} nap");
-                            table.Cell().Padding(2).Text($"{invoice.TotalAmount} Ft").AlignRight();
+                            table.Cell().Padding(2).Text($"{invoice.TotalAmount} €").AlignRight();
                         });
 
                         // Végösszeg
-                        column.Item().PaddingTop(20).AlignRight().Text($"Fizetendő végösszeg: {invoice.TotalAmount} Ft")
+                        column.Item().PaddingTop(20).AlignRight().Text($"Fizetendő végösszeg: {invoice.TotalAmount} €")
                             .SemiBold().FontSize(20);
 
                         // Státusz

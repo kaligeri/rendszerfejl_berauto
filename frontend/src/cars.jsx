@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./cars.css";
 
-const API_BASE = "http://localhost:5239/api";
+const API_BASE = "/api";
 
 function Carspage({ token, isAdmin, userId }) {
     const [cars, setCars] = useState([]);

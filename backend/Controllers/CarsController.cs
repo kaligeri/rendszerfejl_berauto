@@ -16,7 +16,9 @@ namespace backend.Controllers
             _carService = carService;
         }
 
-        [Authorize]
+
+
+        [AllowAnonymous]
         //Összes autó lekérése (GET: api/cars)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Car>>> GetAll()

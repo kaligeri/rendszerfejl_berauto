@@ -6,6 +6,10 @@ import Headernav from "./header";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
 import Carspage from "./Cars";
+import ProfilePage from "./ProfilePage";
+import MyRentals from "./MyRentals";
+import ManageRentals from "./ManageRentals";
+import MyInvoices from "./MyInvoices";
 
 function AppContent() {
     const navigate = useNavigate();
@@ -13,7 +17,8 @@ function AppContent() {
     const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [username, setUsername] = useState(localStorage.getItem("username") || "");
     const [isAdmin, setIsAdmin] = useState(false);
-    const [userId, setUserId] = useState(null)
+    const [userId, setUserId] = useState(null);
+    const [userRole, setUserRole] = useState("User");
 
     const handleLogout = () => {
         setToken(null);
@@ -42,7 +47,12 @@ function AppContent() {
                     decodedToken.role ||
                     decodedToken.Role;
 
-                setIsAdmin(roleClaim === "Admin" || roleClaim === 2 || roleClaim === "2");
+                const isAdminOrAgent = roleClaim === "Admin" || roleClaim === "2" || roleClaim === 2 || roleClaim === "Agent" || roleClaim === "1" || roleClaim === 1;
+                setIsAdmin(isAdminOrAgent);
+                let currentRole = "User";
+                if (roleClaim === "Admin" || roleClaim === "2" || roleClaim === 2) currentRole = "Admin";
+                else if (roleClaim === "Agent" || roleClaim === "1" || roleClaim === 1) currentRole = "Agent";
+                setUserRole(currentRole);
             } catch (err) {
                 console.error("Hiba a token dekódolásakor:", err);
                 handleLogout();
@@ -50,6 +60,7 @@ function AppContent() {
         } else {
             setIsAdmin(false);
             setUserId(null);
+            setUserRole("User");
         }
     }, [token]);
 
@@ -59,6 +70,7 @@ function AppContent() {
                 token={token}
                 username={username}
                 isAdmin={isAdmin}
+                userRole={userRole} 
                 handleLogout={handleLogout}
             />
 
@@ -78,6 +90,10 @@ function AppContent() {
                             onLoginClick={() => navigate("/login")}
                         />
                     } />
+                    {token && <Route path="/profile" element={<ProfilePage token={token} />} />}
+                    {token && <Route path="/my-rentals" element={<MyRentals token={token} />} />}
+                    {isAdmin && <Route path="/manage-rentals" element={<ManageRentals token={token} />} />}
+                    {token && <Route path="/my-invoices" element={<MyInvoices token={token} />} />}
                 </Routes>
             </main>
         </div>
