@@ -19,12 +19,6 @@ function Headernav({ token, username, isAdmin, userRole, handleLogout }) {
             </div>
             <div className="nav-links">
                 <button
-                    className={`nav-item ${isActive("/") ? "active" : ""}`}
-                    onClick={() => navigate("/")}
-                >
-                    Home
-                </button>
-                <button
                     className={`nav-item ${isActive("/autos") ? "active" : ""}`}
                     onClick={() => navigate("/autos")}
                 >

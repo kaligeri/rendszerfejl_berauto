@@ -10,6 +10,7 @@ import ProfilePage from "./ProfilePage";
 import MyRentals from "./MyRentals";
 import ManageRentals from "./ManageRentals";
 import MyInvoices from "./MyInvoices";
+import Gyik from "./Gyik";
 
 function AppContent() {
     const navigate = useNavigate();
@@ -80,7 +81,7 @@ function AppContent() {
 
                     <Route path="/autos" element={<Carspage token={token} isAdmin={isAdmin} userId={userId} />} />
 
-                    <Route path="/gyik" element={<div>Ide jön a GYIK oldal...</div>} />
+                    <Route path="/gyik" element={<Gyik />} />
 
                     <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
 

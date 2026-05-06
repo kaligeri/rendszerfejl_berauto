@@ -1,0 +1,110 @@
+﻿.faq-root {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    font-family: 'Sora', sans-serif;
+}
+
+.faq-container {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.faq-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.faq-title {
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    color: #141412;
+    margin-bottom: 12px;
+}
+
+.faq-subtitle {
+    font-size: 15px;
+    color: #8a8880;
+    line-height: 1.5;
+    font-weight: 300;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.faq-item {
+    border: 1px solid #e2e0d8;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .faq-item.active {
+        border-color: #141412;
+        box-shadow: 0 4px 12px rgba(20, 20, 18, 0.05);
+    }
+
+.faq-question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #141412;
+    text-align: left;
+    transition: background-color 0.2s ease;
+}
+
+    .faq-question:hover {
+        background-color: #fcfbf9;
+    }
+
+.faq-icon {
+    width: 20px;
+    height: 20px;
+    color: #8a8880;
+    transition: transform 0.3s ease, color 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(180deg);
+    color: #141412;
+}
+
+.faq-answer-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+}
+
+.faq-item.active .faq-answer-wrapper {
+    grid-template-rows: 1fr;
+}
+
+.faq-answer-inner {
+    overflow: hidden;
+}
+
+.faq-answer-text {
+    padding: 0 24px 20px 24px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #6b6a67;
+    font-weight: 300;
+}
