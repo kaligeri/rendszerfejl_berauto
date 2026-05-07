@@ -115,7 +115,7 @@ export default function ManageRentals({ token }) {
 
     return (
         <div className="rentals-root">
-            <div className="rentals-container" style={{ maxWidth: "1100px" }}>
+            <div className="rentals-container" style={{ maxWidth: "1400px" }}>
                 <div className="rp-form-header">
                     <h1 className="rp-title">Bérlések Menedzselése</h1>
                     <p className="rp-subtitle">Ügynök felület a bérlések és számlák kezeléséhez.</p>
@@ -128,6 +128,7 @@ export default function ManageRentals({ token }) {
                         <thead>
                             <tr>
                                 <th>Azonosító</th>
+                                <th>Szerepkör</th>
                                 <th>Bérlő</th>
                                 <th>Autó</th>
                                 <th>Kezdés</th>
@@ -141,7 +142,39 @@ export default function ManageRentals({ token }) {
                                 <tr key={r.id}>
                                     <td><strong>#R-{r.id}</strong></td>
                                     {/* Ha van GuestName, akkor Vendég, ha nincs, akkor Regisztrált user */}
-                                    <td>{r.guestName ? `${r.guestName} (Vendég)` : "Regisztrált tag"}</td>
+                                    <td>
+                                        <span style={{
+                                            padding: "4px 8px",
+                                            borderRadius: "6px",
+                                            fontSize: "12px",
+                                            fontWeight: "bold",
+                                            backgroundColor: r.guestName ? "#f0efe9" : "#e6f2ff",
+                                            color: r.guestName ? "#8a8880" : "#0984e3"
+                                        }}>
+                                            {r.guestName ? "Vendég" : "Regisztrált"}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {r.guestName ? (
+                                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                                <div>
+                                                    <strong>{r.guestName}</strong> <span style={{ fontSize: "12px", color: "#8a8880" }}></span>
+                                                </div>
+                                                {r.guestContact && (
+                                                    <span style={{ fontSize: "12px", color: "#6b6a67" }}>{r.guestContact}</span>
+                                                )}
+                                            </div>
+                                        ) : r.user ? (
+                                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                                <strong style={{ color: "#141412" }}>{r.user.username}</strong>
+                                                {r.user.email && (
+                                                    <span style={{ fontSize: "12px", color: "#6b6a67" }}>{r.user.email}</span>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            `Regisztrált fiók (ID: ${r.userId})`
+                                        )}
+                                    </td>
                                     <td>{r.car?.brand || `Autó ID: ${r.carId}`}</td>
                                     <td>{new Date(r.startDate).toLocaleDateString('hu-HU')}</td>
                                     <td>{new Date(r.endDate).toLocaleDateString('hu-HU')}</td>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./cars.css";
 
-const API_BASE = "http://localhost:5239/api"; // Ezt cseréld le, ha a tiéd máshogy volt!
+const API_BASE = "http://localhost:5239/api"; 
 
 function Carspage({ token, isAdmin, userId }) {
     const [cars, setCars] = useState([]);
